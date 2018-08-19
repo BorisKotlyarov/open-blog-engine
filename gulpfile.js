@@ -11,7 +11,7 @@ const clean                       = require('gulp-clean');
 const path                        = require('path');
 
 
-let distDir                       = './dist';
+let distDir                       = './frontend/dist';
 let srcDir                        = './frontend/src';
 let scssDir                       = './frontend/src/scss';
 let jsSource                      = './frontend/src/scripts';
