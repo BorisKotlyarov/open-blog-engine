@@ -1,10 +1,9 @@
 {
   "name": "open-blog-engine-backend",
   "version": "0.0.1",
-  "devDependencies": {
-    "node-static": "^0.7.7",
-    "just-rest": "^0.0.8"
+  "dependencies":{
+    "just-rest": "latest"
   },
-  "author": "Boris & Alex",
+  "author": "Boris Kotlyarov & Alexandr Boychenko",
   "license": "MIT"
 }
