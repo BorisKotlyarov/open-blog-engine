@@ -33,6 +33,6 @@ schema.statics.insert = function (data, callback) {
         });
 
     });
-};;
+};
 
 module.exports = mongoose.model('Users', schema);
