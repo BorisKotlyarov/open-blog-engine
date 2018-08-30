@@ -8,8 +8,12 @@
   },
   "scripts": {
     "start": "node apiServer.js",
-    "mongoDB": "mongod --storageEngine=mmapv1 --dbpath ../database --smallfiles"
+    "mongoDB": "mongod --storageEngine=mmapv1 --dbpath ../database --smallfiles",
+    "postinstall": "cd ../ && mkdir database"
   },
   "author": "Boris Kotlyarov & Alexandr Boychenko",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts":{
+    "postinstall": "cd ../ && mkdir database"
+  }
 }
