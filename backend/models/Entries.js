@@ -21,7 +21,7 @@ const schema = new Schema({
         required: true
     },
 
-    parent_id: {
+    category_id: {
         type: Number,
         ref: 'Categories'
     },
