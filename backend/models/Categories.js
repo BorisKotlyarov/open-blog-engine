@@ -1,5 +1,5 @@
 const mongoose                  = require('mongoose');
-const AutoIncrement             = require('./AutoIncrement');
+const insert                    = require('./helpers/insert');
 const {Schema}                  = mongoose;
 
 
@@ -21,21 +21,6 @@ const schema = new Schema({
 
 });
 
-schema.statics.insert = function (data, callback) {
-    let Model = this;
-
-    AutoIncrement.setIncrement('Categories', function (err, index){
-
-        data['id'] = index;
-        let instance = new Model(data);
-
-        instance.save((error, responseData) => {
-            callback(...arguments);
-        });
-
-    });
-};
-
-
+schema.statics.insert = insert;
 
 module.exports = mongoose.model('Categories', schema);
