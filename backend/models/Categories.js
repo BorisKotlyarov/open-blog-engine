@@ -15,7 +15,8 @@ const schema = new Schema({
 
     parent_id: {
         type: Number,
-        ref: 'Categories'
+        ref: 'Categories',
+        foreignField: 'id'
     },
 
 });
