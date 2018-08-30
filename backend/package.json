@@ -7,7 +7,7 @@
     "mongoose": "^5.2.9"
   },
   "scripts": {
-    "start": "node app.js",
+    "start": "node apiServer.js",
     "mongoDB": "mongod --storageEngine=mmapv1 --dbpath ../database"
   },
   "author": "Boris Kotlyarov & Alexandr Boychenko",
