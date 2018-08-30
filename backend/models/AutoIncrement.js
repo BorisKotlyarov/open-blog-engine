@@ -1,4 +1,5 @@
-const {Schema} = require('mongoose');
+const mongoose = require('mongoose');
+const {Schema} = mongoose;
 
 var schema = new Schema({
     indexId: Number,
@@ -10,8 +11,8 @@ schema.statics.setIncrement = function (tableName, callback) {
         {tableName: tableName}, [],
         {$inc: {indexId: 1}}, {"new": true, upsert: true},
         function (err, indexId) {
-            callback(err, indexId);
+            callback(err, indexId.value.indexId);
         });
 };
 
-exports.AutoInc = mongoose.model('autoincrement', schema);
+module.exports = mongoose.model('AutoIncrement', schema);
