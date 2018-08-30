@@ -1,6 +1,6 @@
-const { Modules, Server }   = require('just-rest');
-const config                = require('./config');
-const databaseCon           = require('./dbConnection');
+const { Modules, Server }       = require('just-rest');
+const config                    = require('./config');
+const databaseCon               = require('./dbConnection');
 
 Modules.defineResponseInterceptor('./interceptors/corsAllowHeaders.js');
 Modules.define('./modules/categories/index.js');

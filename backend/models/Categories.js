@@ -1,6 +1,6 @@
 const mongoose                  = require('mongoose');
-const {Schema}                  = mongoose;
 const AutoIncrement             = require('./AutoIncrement');
+const {Schema}                  = mongoose;
 
 
 const schema = new Schema({

@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const {Schema} = mongoose;
+const mongoose                  = require('mongoose');
+const {Schema}                  = mongoose;
 
 var schema = new Schema({
     indexId: Number,

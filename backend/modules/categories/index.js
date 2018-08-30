@@ -1,5 +1,4 @@
-const httpRequest           = require('../../utils/transports');
-const CategoriesModel       = require('../../models/Categories');
+const CategoriesModel           = require('../../models/Categories');
 
 
 module.exports = {
