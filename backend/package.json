@@ -12,8 +12,5 @@
     "postinstall": "cd ../ && mkdir database"
   },
   "author": "Boris Kotlyarov & Alexandr Boychenko",
-  "license": "MIT",
-  "scripts":{
-    "postinstall": "cd ../ && mkdir database"
-  }
+  "license": "MIT"
 }
