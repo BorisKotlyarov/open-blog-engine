@@ -22,7 +22,7 @@ const schema = new Schema({
 schema.statics.insert = function (data, callback) {
     let Model = this;
 
-    AutoIncrement.setIncrement(Model.modelName, function (err, index){
+    insert.setIncrement(Model.modelName, function (err, index){
 
         data['id'] = index;
         data.password = crypto.createHash('md5').update(data.password).digest("hex");
