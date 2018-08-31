@@ -30,4 +30,4 @@ const schema = new Schema({
 
 schema.statics.insert = insert;
 
-module.exports = mongoose.model('Categories', schema);
+module.exports = mongoose.model('Entries', schema);
