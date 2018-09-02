@@ -36,4 +36,15 @@ schema.statics.insert = function (userId, callback) {
     });
 };
 
+schema.statics.byToken = function (token) {
+    return new Promise((resolve, reject) => {
+        this.findOne({token}, (error, session) => {
+            if (error) {
+                reject(error);
+            }
+            resolve(session);
+        });
+    });
+};
+
 module.exports = mongoose.model('Sessions', schema);
