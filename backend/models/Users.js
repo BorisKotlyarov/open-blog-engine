@@ -1,6 +1,7 @@
 const mongoose                  = require('mongoose');
 const crypto                    = require('crypto');
 const insert                    = require('./AutoIncrement');
+const Sessions                  = require('./Sessions');
 const {Schema}                  = mongoose;
 
 
@@ -32,6 +33,25 @@ schema.statics.insert = function (data, callback) {
             callback(...arguments);
         });
 
+    });
+};
+
+schema.statics.bySessionToken = function (token) {
+    let Model = this;
+
+    return Sessions.byToken(token).then((session) => {
+        return new Promise((resolve, reject) => {
+            if (!session) {
+                resolve(session);
+            }
+
+            Model.findOne({id: session.user_id}, (error, user) => {
+                if (error) {
+                    reject(error);
+                }
+                resolve(user);
+            });
+        })
     });
 };
 
