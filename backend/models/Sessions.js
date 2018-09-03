@@ -51,4 +51,22 @@ schema.statics.byToken = function (token) {
     });
 };
 
+schema.statics.close = function (token) {
+
+    return new Promise((resolve, reject) => {
+        this.findOne({token}, (error, session) => {
+            if (error) {
+                reject(error);
+            }
+
+            if (null !== session) {
+                session.state = 'close';
+                session.save();
+            }
+
+            resolve(session);
+        });
+    });
+};
+
 module.exports = mongoose.model('Sessions', schema);
