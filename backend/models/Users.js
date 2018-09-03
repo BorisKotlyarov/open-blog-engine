@@ -74,6 +74,4 @@ schema.statics.findUser = function ({login, password}){
     });
 };
 
-
-
 module.exports = mongoose.model('Users', schema);

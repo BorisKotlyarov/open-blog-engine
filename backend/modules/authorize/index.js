@@ -6,45 +6,53 @@ const SessionsModel             = require('../../models/Sessions');
 module.exports = {
 
     POST: {
-        '/authorize': function(request, response) {
+        '/authorize': async function(request, response) {
+
+            let body = await request.body;
 
             let find = {
-                login: request.body.login,
-                password: request.body.password,
+                login: body.login,
+                password: body.password,
             }; //This variable is intended only to see which fields should be in the body of the request
 
-            UsersModel.findUser(find)
-                .then((error, user) => {
-                    if (null === user) {
-                        response.error(403);
-                        return;
-                    }
-                    return SessionsModel.insert(user.id);
-                })
-                .then((session) => {
-                    response.resp(session);
-                })
-                .catch((error)=> {
-                    response.error(500, error.stack);
-                });
-        },
+            try {
+                let user = await UsersModel.findUser(find);
 
-        '/authorize/close': function(request, response){
-
-            SessionsModel.findOne({
-                token: request.headers['access-token']
-            }, (error, session) => {
-
-                if (null === session) {
-                    response.status(403).send({error: 403, message: 'Forbidden'});
+                if (null === user) {
+                    response.error(403);
                     return;
                 }
 
-                session.state = 'close';
-                session.save();
+                let session = await SessionsModel.insert(user.id);
 
-                response.json(session);
-            });
+                response.resp(session);
+
+            } catch(error){
+                response.error(500, error.stack);
+            }
+        },
+
+        '/authorize/close': async function(request, response){
+
+            if (!request.headers['access-token']) {
+                response.error(403);
+                return;
+            }
+
+            try {
+                let session = await SessionsModel.close(request.headers['access-token']);
+
+                if (null === session) {
+                    response.error(401);
+                    return;
+                }
+
+                response.resp(session);
+
+            } catch(error){
+                response.error(500, error.stack);
+            }
+
         }
     }
 

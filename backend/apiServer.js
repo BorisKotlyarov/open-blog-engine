@@ -4,6 +4,7 @@ const databaseCon               = require('./dbConnection');
 
 Modules.defineResponseInterceptor('./interceptors/corsAllowHeaders.js');
 Modules.define('./modules/categories/index.js');
+Modules.define('./modules/authorize/index.js');
 
 
 databaseCon.then((dbConnection)=>{
