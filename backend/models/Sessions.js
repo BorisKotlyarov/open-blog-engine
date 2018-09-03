@@ -23,8 +23,8 @@ schema.statics.insert = function (userId) {
     };
 
     return new Promise((resolve, reject) => {
-        let increment = insertId(Model.modelName);
-        increment.then((indexId) => {
+       insertId(Model.modelName)
+        .then((indexId) => {
             data['id'] = indexId;
             data['token'] = crypto.createHash('md5').update(`${userId}:${new Date().getTime()}`).digest("hex");
 
@@ -36,7 +36,7 @@ schema.statics.insert = function (userId) {
                 }
                 resolve(responseData);
             });
-        })
+        });
     });
 };
 

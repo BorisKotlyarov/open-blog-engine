@@ -1,7 +1,7 @@
 const mongoose                  = require('mongoose');
 const {Schema}                  = mongoose;
 
-let schema = new Schema({
+const schema = new Schema({
     indexId: Number,
     tableName: String
 });
