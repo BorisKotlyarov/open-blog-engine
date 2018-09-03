@@ -10,7 +10,8 @@ const schema = new Schema({
 
     login: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
 
     password: {
@@ -26,7 +27,7 @@ schema.statics.insert = function (data, callback) {
     insert.setIncrement(Model.modelName, function (err, index){
 
         data['id'] = index;
-        data.password = crypto.createHash('md5').update(data.password).digest("hex");
+        data.password = Model.passwordEncrypt(data.password);
         let instance = new Model(data);
 
         instance.save((error, responseData) => {
@@ -54,5 +55,25 @@ schema.statics.bySessionToken = function (token) {
         })
     });
 };
+
+schema.statics.passwordEncrypt = function (password){
+   return crypto.createHash('md5').update(password).digest("hex");
+};
+
+schema.statics.findUser = function ({login, password}){
+
+    let Model = this;
+
+    return new Promise((resolve, reject)=>{
+        Model.findOne({login, password: Model.passwordEncrypt(password)}, (error, user)=>{
+            if (error) {
+                reject(error);
+            }
+            resolve(user);
+        })
+    });
+};
+
+
 
 module.exports = mongoose.model('Users', schema);

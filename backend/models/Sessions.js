@@ -16,23 +16,27 @@ const schema = new Schema({
 
 });
 
-schema.statics.insert = function (userId, callback) {
+schema.statics.insert = function (userId) {
     let Model = this;
     let data = {
         user_id: userId
     };
 
-    AutoIncrement.setIncrement(Model.modelName, function (err, index){
+    return new Promise((resolve, reject) => {
+        AutoIncrement.setIncrement(Model.modelName, function (err, index) {
 
-        data['id'] = index;
-        data['token'] = crypto.createHash('md5').update(`${userId}:${new Date().getTime()}`).digest("hex");
+            data['id'] = index;
+            data['token'] = crypto.createHash('md5').update(`${userId}:${new Date().getTime()}`).digest("hex");
 
-        let instance = new Model(data);
+            let instance = new Model(data);
 
-        instance.save((error, responseData) => {
-            callback(...arguments);
+            instance.save((error, responseData) => {
+                if (error) {
+                    reject(error)
+                }
+                resolve(responseData);
+            });
         });
-
     });
 };
 
