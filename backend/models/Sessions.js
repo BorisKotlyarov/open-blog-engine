@@ -1,5 +1,5 @@
 const mongoose                  = require('mongoose');
-const insert                    = require('./helpers/insert');
+const insertId                  = require('./helpers/insert');
 const {Schema}                  = mongoose;
 
 
@@ -23,9 +23,9 @@ schema.statics.insert = function (userId) {
     };
 
     return new Promise((resolve, reject) => {
-        AutoIncrement.setIncrement(Model.modelName, function (err, index) {
-
-            data['id'] = index;
+        let increment = insertId(Model.modelName);
+        increment.then((indexId) => {
+            data['id'] = indexId;
             data['token'] = crypto.createHash('md5').update(`${userId}:${new Date().getTime()}`).digest("hex");
 
             let instance = new Model(data);
@@ -36,7 +36,7 @@ schema.statics.insert = function (userId) {
                 }
                 resolve(responseData);
             });
-        });
+        })
     });
 };
 
