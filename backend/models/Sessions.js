@@ -1,5 +1,5 @@
 const mongoose                  = require('mongoose');
-const insertId                  = require('./helpers/insert');
+const insert                    = require('./helpers/insert');
 const {Schema}                  = mongoose;
 
 
@@ -23,7 +23,7 @@ schema.statics.insert = function (userId) {
     };
 
     return new Promise((resolve, reject) => {
-       insertId(Model.modelName)
+       insert(Model.modelName)
         .then((indexId) => {
             data['id'] = indexId;
             data['token'] = crypto.createHash('md5').update(`${userId}:${new Date().getTime()}`).digest("hex");
