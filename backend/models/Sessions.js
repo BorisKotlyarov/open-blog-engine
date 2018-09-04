@@ -18,26 +18,19 @@ const schema = new Schema({
 
 schema.statics.insert = function (userId) {
     let Model = this;
-    let data = {
-        user_id: userId
-    };
 
-    return new Promise((resolve, reject) => {
        insert(Model.modelName)
-        .then((indexId) => {
-            data['id'] = indexId;
+        .then((data) => {
             data['token'] = crypto.createHash('md5').update(`${userId}:${new Date().getTime()}`).digest("hex");
+            data['user_id'] = userId;
 
             let instance = new Model(data);
-
-            instance.save((error, responseData) => {
-                if (error) {
-                    reject(error)
+            instance.save((error) => {
+                if(error) {
+                    console.log(error);
                 }
-                resolve(responseData);
             });
         });
-    });
 };
 
 schema.statics.byToken = function (token) {
