@@ -1,17 +1,15 @@
 const AutoIncrement             = require('../AutoIncrement');
 
 
-module.exports = function (data, callback) {
-    let Model = this;
+module.exports = function (data) {
+    return new Promise((resolve, reject) => {
+        let Model = this;
 
-    AutoIncrement.setIncrement(Model.modelName, function (err, index){
+        AutoIncrement.setIncrement(Model.modelName)
+            .then((indexId) => {
+                data['id'] = indexId;
+                resolve(data);
+            });
 
-        data['id'] = index;
-        let instance = new Model(data);
-
-        instance.save((error, responseData) => {
-            callback(...arguments);
-        });
-
-    });
+    })
 };
