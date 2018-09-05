@@ -1,5 +1,5 @@
 const mongoose                  = require('mongoose');
-const insert                    = require('./helpers/insert');
+const AutoIncrement             = require('../AutoIncrement');
 const {Schema}                  = mongoose;
 
 
@@ -18,16 +18,18 @@ const schema = new Schema({
 
 schema.statics.insert = function (userId) {
     let Model = this;
+    let data = {};
 
-       insert(Model.modelName)
-        .then((data) => {
+    AutoIncrement.setIncrement(Model.modelName)
+        .then((indexId) => {
+            data['id'] = indexId;
             data['token'] = crypto.createHash('md5').update(`${userId}:${new Date().getTime()}`).digest("hex");
             data['user_id'] = userId;
 
             let instance = new Model(data);
             instance.save((error) => {
                 if(error) {
-                    console.log(error);
+                    throw error;
                 }
             });
         });

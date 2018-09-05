@@ -8,14 +8,7 @@ module.exports = function (data) {
         AutoIncrement.setIncrement(Model.modelName)
             .then((indexId) => {
                 data['id'] = indexId;
-                let instance = new Model(data);
-
-                instance.save((error, responseData) => {
-                    if(error) {
-                        reject(error);
-                    }
-                    resolve(responseData);
-                });
+                resolve(data);
             });
 
     })
