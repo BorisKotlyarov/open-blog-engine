@@ -1,7 +1,7 @@
 module.exports = {
 
     ANY: {
-        '/(.+?)': function(response){
+        '/(.+?)': function(request, response){
             const CorsAllowHeaders = {
                 'Access-Control-Allow-Origin': '*',
                 'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',

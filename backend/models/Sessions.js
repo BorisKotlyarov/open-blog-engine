@@ -1,72 +1,57 @@
-const mongoose                  = require('mongoose');
-const insert                    = require('./helpers/insert');
-const {Schema}                  = mongoose;
+const mongoose = require('mongoose');
+const crypto = require('crypto');
+const _defineDefaultMethods = require('./_model');
 
+const {Schema} = mongoose;
+
+const __MODEL_NAME__ = 'Sessions';
 
 const schema = new Schema({
     id: Number,
 
     token: String,
 
-    user_id: {
+    user: {
         type: Number,
-        ref: 'Sessions',
-        foreignField: 'id'
+        ref: 'Users'
+    },
+
+    state: {
+        type: String,
+        enum: ['open', 'close'],
+        default: 'open'
     },
 
 });
 
-schema.statics.insert = function (userId) {
+_defineDefaultMethods(__MODEL_NAME__, schema);
+
+schema.statics.createToken = function (userId) {
+    return crypto.createHash('md5').update(`${userId}:${new Date().getTime()}`).digest("hex");
+}
+
+schema.statics.create = function (userId) {
     let Model = this;
+    console.log(userId)
     let data = {
-        user_id: userId
+        user: userId,
+        token: this.createToken(userId)
     };
 
-    return new Promise((resolve, reject) => {
-        AutoIncrement.setIncrement(Model.modelName, function (err, index) {
-
-            data['id'] = index;
-            data['token'] = crypto.createHash('md5').update(`${userId}:${new Date().getTime()}`).digest("hex");
-
-            let instance = new Model(data);
-
-            instance.save((error, responseData) => {
-                if (error) {
-                    reject(error)
-                }
-                resolve(responseData);
-            });
-        });
-    });
+    let instance = new Model(data);
+    return instance.save();
 };
 
-schema.statics.byToken = function (token) {
-    return new Promise((resolve, reject) => {
-        this.findOne({token}, (error, session) => {
-            if (error) {
-                reject(error);
-            }
-            resolve(session);
-        });
-    });
+schema.statics.close = async function (token) {
+
+    let session = await this.findOne({token});
+
+    if (!session) {
+        return null;
+    }
+
+    session.state = 'close';
+    return session.save();
 };
 
-schema.statics.close = function (token) {
-
-    return new Promise((resolve, reject) => {
-        this.findOne({token}, (error, session) => {
-            if (error) {
-                reject(error);
-            }
-
-            if (null !== session) {
-                session.state = 'close';
-                session.save();
-            }
-
-            resolve(session);
-        });
-    });
-};
-
-module.exports = mongoose.model('Sessions', schema);
+module.exports = mongoose.model(__MODEL_NAME__, schema);

@@ -1,12 +1,12 @@
-const crypto                    = require('crypto');
-const UsersModel                = require('../../models/Users');
-const SessionsModel             = require('../../models/Sessions');
+const {Errors} = require('just-rest');
+const UsersModel = require('../../models/Users');
+const SessionsModel = require('../../models/Sessions');
 
 
 module.exports = {
 
     POST: {
-        '/authorize': async function(request, response) {
+        '/authorize': async function (request, response) {
 
             let body = await request.body;
 
@@ -15,43 +15,30 @@ module.exports = {
                 password: body.password,
             }; //This variable is intended only to see which fields should be in the body of the request
 
-            try {
-                let user = await UsersModel.findUser(find);
+            let user = await UsersModel.findUser(find);
 
-                if (null === user) {
-                    response.error(403);
-                    return;
-                }
-
-                let session = await SessionsModel.insert(user.id);
-
-                response.resp(session);
-
-            } catch(error){
-                response.error(500, error.stack);
+            if (null === user) {
+                throw new Errors(401);
             }
+
+            let session = await SessionsModel.create(user._id);
+
+            response.resp(session);
         },
 
-        '/authorize/close': async function(request, response){
+        '/authorize/close': async function (request, response) {
 
             if (!request.headers['access-token']) {
-                response.error(403);
-                return;
+                throw new Errors(401);
             }
 
-            try {
-                let session = await SessionsModel.close(request.headers['access-token']);
+            let session = await SessionsModel.close(request.headers['access-token']);
 
-                if (null === session) {
-                    response.error(401);
-                    return;
-                }
-
-                response.resp(session);
-
-            } catch(error){
-                response.error(500, error.stack);
+            if (null === session) {
+                throw new Errors(403);
             }
+
+            response.resp(session);
 
         }
     }

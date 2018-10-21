@@ -1,15 +1,16 @@
 {
   "name": "open-blog-engine-backend",
   "version": "0.0.1",
-  "dependencies":{
+  "dependencies": {
+    "bluebird": "^3.5.2",
     "just-rest": "latest",
     "mongodb": "^3.1.3",
-    "mongoose": "^5.2.9"
+    "mongoose": "^5.2.9",
+    "mongoose-auto-increment": "^5.0.1"
   },
   "scripts": {
     "start": "node apiServer.js",
-    "mongoDB": "mongod --storageEngine=mmapv1 --dbpath ../database --smallfiles",
-    "postinstall": "cd ../ && mkdir database"
+    "mongoDB": "mongod --storageEngine=mmapv1 --dbpath ../database --smallfiles"
   },
   "author": "Boris Kotlyarov & Alexandr Boychenko",
   "license": "MIT"

@@ -1,9 +1,11 @@
-const mongoose                  = require('mongoose');
-const crypto                    = require('crypto');
-const insert                    = require('./AutoIncrement');
-const Sessions                  = require('./Sessions');
-const {Schema}                  = mongoose;
+const crypto = require('crypto');
+const mongoose = require('mongoose');
+const _defineDefaultMethods = require('./_model');
+const SessionsModel = require('./Sessions');
 
+const {Schema} = mongoose;
+
+const __MODEL_NAME__ = 'Users';
 
 const schema = new Schema({
     id: Number,
@@ -17,61 +19,37 @@ const schema = new Schema({
     password: {
         type: String,
         required: true
+    },
+
+    permissions: {
+        type: [String],
+        default: []
     }
 
 });
 
-schema.statics.insert = function (data, callback) {
+_defineDefaultMethods(__MODEL_NAME__, schema);
+
+schema.statics.create = function (data) {
     let Model = this;
-
-    insert.setIncrement(Model.modelName, function (err, index){
-
-        data['id'] = index;
-        data.password = Model.passwordEncrypt(data.password);
-        let instance = new Model(data);
-
-        instance.save((error, responseData) => {
-            callback(...arguments);
-        });
-
-    });
+    data.password = Model.passwordEncrypt(data.password);
+    let instance = new Model(data);
+    return instance.save();
 };
 
 schema.statics.bySessionToken = function (token) {
-    let Model = this;
-
-    return Sessions.byToken(token).then((session) => {
-        return new Promise((resolve, reject) => {
-            if (!session) {
-                resolve(session);
-            }
-
-            Model.findOne({id: session.user_id}, (error, user) => {
-                if (error) {
-                    reject(error);
-                }
-                resolve(user);
-            });
-        })
+    return SessionsModel.findOne({token}).populate({
+        path: 'user',
+        model: __MODEL_NAME__
     });
 };
 
-schema.statics.passwordEncrypt = function (password){
-   return crypto.createHash('md5').update(password).digest("hex");
+schema.statics.passwordEncrypt = function (password) {
+    return crypto.createHash('md5').update(password).digest("hex");
 };
 
-schema.statics.findUser = function ({login, password}){
-
-    let Model = this;
-
-    return new Promise((resolve, reject)=>{
-        Model.findOne({login, password: Model.passwordEncrypt(password)}, (error, user)=>{
-            if (error) {
-                reject(error);
-            }
-            resolve(user);
-        })
-    });
+schema.statics.findUser = function ({login, password}) {
+    return this.findOne({login, password: this.passwordEncrypt(password)});
 };
 
-module.exports = mongoose.model('Users', schema);
+module.exports = mongoose.model(__MODEL_NAME__, schema);
